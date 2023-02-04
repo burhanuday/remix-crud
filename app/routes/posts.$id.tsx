@@ -1,16 +1,26 @@
 import type { LoaderArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { useCatch, useLoaderData } from "@remix-run/react";
+import { zx } from "zodix";
 import { getOnePost } from "~/utils/api";
 
-export async function loader(args: LoaderArgs) {
-  const postId: number = args.params.id ? Number(args.params.id) : -1;
+export async function loader({ params }: LoaderArgs) {
+  const { id } = zx.parseParams(
+    params,
+    { id: zx.NumAsString },
+    {
+      message: "Invalid post id",
+      status: 400,
+    }
+  );
 
-  if (postId === -1) {
-    throw json("Post was not found", { status: 404 });
+  let post = await getOnePost(id);
+
+  if (!post.id) {
+    post = await getOnePost(1);
   }
 
-  return json(await getOnePost(postId));
+  return json(post);
 }
 
 export function CatchBoundary() {
@@ -18,7 +28,6 @@ export function CatchBoundary() {
 
   return (
     <div>
-      <h1 className="card-title">Not found</h1>
       <p>{caught.data}</p>
     </div>
   );
@@ -34,9 +43,6 @@ export default function Post() {
           <h2 className="card-title">{data.title}</h2>
           <p>{data.body}</p>
           <p>User: {data.userId}</p>
-          <div className="card-actions justify-end">
-            <button className="btn btn-primary">Mark done!</button>
-          </div>
         </div>
       </div>
     </div>
