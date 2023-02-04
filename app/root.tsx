@@ -21,7 +21,7 @@ export function links() {
 
 export default function App() {
   return (
-    <html lang="en">
+    <html lang="en" data-theme="cupcake">
       <head>
         <Meta />
         <Links />
