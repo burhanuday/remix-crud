@@ -43,7 +43,7 @@ export default function Index() {
       <div>
         <div className="card w-96 bg-base-100 shadow-xl">
           <div className="card-body">
-            <h2 className="card-title hover:underline">Create a new post</h2>
+            <h2 className="card-title">Create a new post</h2>
             <Form method="post">
               <input
                 type="text"
